@@ -21,12 +21,12 @@ def process_request(criterias, entries):
     Verify that all criterias are respected to give the loan
     '''
     try:
-        if 100 * (criterias['annual_interest_payment'] / entries['Income'].get()) > 20 or\
-        criterias['loan_to_income'] > 4 or entries['Credit Score'].get() < 600:
+        if 100 * (criterias['annual_interest_payment'] / int(entries['Income'].get())) > 20 or\
+        criterias['loan_to_income'] > 4 or int(entries['Credit Score'].get()) < 600:
             message.showinfo("Error", "Sorry, your request cannot be satisfied.")
             return False
     except Exception as error:
-        print('Sorry, failure while processing request.\n{}'.format(error))
+        print('Sorry, failure while processing request. {}'.format(error))
         return False
     return True
 
@@ -46,10 +46,13 @@ def compute_criterias(entries):
     '''
     criterias = init_criterias()
     try:
-        criterias['annual_interest_payment'] = entries['Requested Loan Amount'].get() * entries['Interest Rate'].get()
-        criterias['loan_to_income'] = entries['Requested Loan Amount'].get() / entries['Income'].get()
+        criterias['annual_interest_payment'] = int(entries['Requested Loan Amount'].get())\
+                                               * float(entries['Interest Rate'].get())
+        criterias['loan_to_income'] = int(entries['Requested Loan Amount'].get())\
+                                     / int(entries['Income'].get())
     except Exception as error:
         print('Error : {}'.format(error))
+        return False
     return criterias
 
 def handle_fields(entries):
@@ -58,15 +61,23 @@ def handle_fields(entries):
     '''
     for field in FORM_FIELDS:
         if not entries[field].get():
-            return message.showinfo("Error", "Please, all fields are required.")
+            message.showinfo("Error", "Please, all fields are required.")
+            return False
+    return True
 
 def submit_loan(entries):
     '''
     Manage each step to determine if the loan is accepted
     '''
-    handle_fields(entries)
+    if not handle_fields(entries):
+        return False
     criterias = compute_criterias(entries)
-    process_request(criterias, entries)
+    if not criterias:
+        return False
+    if process_request(criterias, entries):
+        message.showinfo("Success", "Congratulations, your loan has been accepted.")
+        return True
+    return False
 
 def create_buttons(root, entries):
     '''
@@ -101,7 +112,7 @@ def init_window():
     return root
 
 if __name__ == '__main__':
-    root = init_window()
-    entries = set_form(root)
-    create_buttons(root, entries)
-    root.mainloop()
+    ROOT = init_window()
+    ENTRIES = set_form(ROOT)
+    create_buttons(ROOT, ENTRIES)
+    ROOT.mainloop()
