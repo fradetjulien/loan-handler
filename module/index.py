@@ -6,7 +6,7 @@ import tkinter.messagebox as message
 from tkinter import filedialog as fd
 
 FORM_FIELDS = ('First Name', 'Last Name', 'Social Security Number', 'Requested Loan Amount',
-               'Loan Duration', 'Interest Rate', 'Income', 'Credit Score')
+               'Interest Rate', 'Income', 'Credit Score')
 
 def import_file():
     '''
@@ -96,6 +96,24 @@ def create_buttons(root, entries):
     submit = tk.Button(root, text='Import a CSV file', command=(lambda e=entries: import_file()))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
 
+def create_radio_buttons(root, entries):
+    '''
+    Radio buttons to decide the loan duration
+    '''
+    var = tk.IntVar()
+    row = tk.Frame(root, bg='white')
+    lab = tk.Label(row, width=22, text='Loan Duration : ', anchor='w')
+    R1 = tk.Radiobutton(root, variable=var, text="5 years", value=5)
+    R2 = tk.Radiobutton(root, variable=var, text="15 years", value=15)
+    R3 = tk.Radiobutton(root, variable=var, text="30 years", value=30)
+    row.pack(side=tk.TOP, fill=tk.X, padx=5, pady=5)
+    lab.pack(side=tk.LEFT)
+    R1.pack(anchor ='w')
+    R2.pack(anchor ='w')
+    R3.pack(anchor ='w')
+    entries['Loan Duration'] = var
+    return entries
+
 def set_form(root):
     '''
     Construct the form
@@ -109,6 +127,7 @@ def set_form(root):
         lab.pack(side=tk.LEFT)
         ent.pack(side=tk.RIGHT, expand=tk.YES, fill=tk.X)
         entries[field] = ent
+    entries = create_radio_buttons(root, entries)
     return entries
 
 def init_window():
