@@ -63,6 +63,14 @@ def handle_fields(entries):
         if not entries[field].get():
             message.showinfo("Error", "Please, all fields are required.")
             return False
+    try:
+        if int(entries['Credit Score'].get()) < 0 or int(entries["Credit Score"].get()) > 850:
+            message.showinfo("Error", "Your Credit Score is invalid.")
+            return False
+    except Exception as error:
+        message.showinfo("Error", "Please, insert a number for the Credit Score.")
+        print("Error : {}".format(error))
+        return False
     return True
 
 def submit_loan(entries):
