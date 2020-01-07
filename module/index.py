@@ -5,7 +5,7 @@ import tkinter as tk
 import tkinter.messagebox as message
 from tkinter import filedialog as fd
 
-form_fields = ('First Name', 'Last Name', 'Social Security Number', 'Requested Loan Amount',
+FORM_FIELDS = ('First Name', 'Last Name', 'Social Security Number', 'Requested Loan Amount',
                'Loan Duration', 'Interest Rate', 'Income', 'Credit Score')
 
 def import_file():
@@ -14,13 +14,59 @@ def import_file():
     '''
     filename = fd.askopenfilename(initialdir="/", title="Select a file",
                                   filetypes=(("CSV Files", "*.csv"),))
+    return filename
+
+def process_request(criterias, entries):
+    '''
+    Verify that all criterias are respected to give the loan
+    '''
+    try:
+        if 100 * (criterias['annual_interest_payment'] / entries['Income'].get()) > 20 or\
+        criterias['loan_to_income'] > 4 or entries['Credit Score'].get() < 600:
+            message.showinfo("Error", "Sorry, your request cannot be satisfied.")
+            return False
+    except Exception as error:
+        print('Sorry, failure while processing request.\n{}'.format(error))
+        return False
+    return True
+
+def init_criterias():
+    '''
+    Initialize a new dictionnary of criterias
+    '''
+    criterias = {
+        "annual_interest_payment": None,
+        "loan_to_income": None,
+    }
+    return criterias
+
+def compute_criterias(entries):
+    '''
+    With the recovered datas, determine if the loan is accepted
+    '''
+    criterias = init_criterias()
+    try:
+        criterias['annual_interest_payment'] = entries['Requested Loan Amount'].get() * entries['Interest Rate'].get()
+        criterias['loan_to_income'] = entries['Requested Loan Amount'].get() / entries['Income'].get()
+    except Exception as error:
+        print('Error : {}'.format(error))
+    return criterias
+
+def handle_fields(entries):
+    '''
+    Check that all fields have been filled in
+    '''
+    for field in FORM_FIELDS:
+        if not entries[field].get():
+            return message.showinfo("Error", "Please, all fields are required.")
 
 def submit_loan(entries):
     '''
+    Manage each step to determine if the loan is accepted
     '''
-    for field in form_fields:
-        if not entries[field].get():
-            return message.showinfo("Error", "Please, all fields are required.")
+    handle_fields(entries)
+    criterias = compute_criterias(entries)
+    process_request(criterias, entries)
 
 def create_buttons(root, entries):
     '''
@@ -36,7 +82,7 @@ def set_form(root):
     Construct the form
     '''
     entries = {}
-    for field in form_fields:
+    for field in FORM_FIELDS:
         row = tk.Frame(root, bg='white')
         lab = tk.Label(row, width=22, text=field+" : ", anchor='w')
         ent = tk.Entry(row)
