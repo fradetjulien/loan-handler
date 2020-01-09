@@ -34,21 +34,27 @@ def display_informations(criterias, entries):
     '''
     Display a summary of all informations
     '''
-    message.showinfo("Success", "Congratulations, your loan has been accepted.")
     message.showinfo("Informations", "First Name : {}\nLast Name : {}\n"
-                     "Income : ${}\nSocial Security Number : {}\nCredit Score : {}\n"
+                     "Income : ${}\nSocial Security Number : {}\n"
                      "Requested Loan Amount : ${}\nInterest Rate : {}%\nHome Value : ${}\n"
-                     "Annual Interest Payment : $ {}\nInterest Payment to income : {}%\n"
-                     "Loan to Home : {}%".format(entries['First Name'], entries['Last Name'],
-                                                 entries['Income'],
-                                                 entries['Social Security Number'],
-                                                 entries['Credit Score'],
-                                                 entries['Home Value'],
-                                                 entries['Requested Loan Amount'],
-                                                 entries['Interest Rate'],
-                                                 criterias['annual_interest_payment'],
-                                                 criterias['interest_payment_to_income'],
-                                                 criterias['loan_to_home']))
+                     "Annual Interest Payment : $ {}\n"
+                     "Interest Payment to income : {}% - State : {}\n"
+                     "Loan to Home : {}% - State : {}\n"
+                     "Credit Score : {}"
+                     " - State : {}\n".format(entries['First Name'].get(),
+                                              entries['Last Name'].get(),
+                                              entries['Income'].get(),
+                                              entries['Social Security Number'].get(),
+                                              entries['Requested Loan Amount'].get(),
+                                              entries['Interest Rate'].get(),
+                                              entries['Home Value'].get(),
+                                              criterias['annual_interest_payment'],
+                                              criterias['interest_payment_to_income']['value'],
+                                              criterias['interest_payment_to_income']['state'],
+                                              criterias['loan_to_home']['value'],
+                                              criterias['loan_to_home']['state'],
+                                              criterias['credit_score']['value'],
+                                              criterias['credit_score']['state']))
 
 def process_request(criterias, entries):
     '''
@@ -149,6 +155,7 @@ def submit_loan(entries):
         message.showinfo("Error", "Sorry, your request cannot be satisfied.")
         return False
     if process_request(criterias, entries):
+        message.showinfo("Success", "Congratulations, your loan has been accepted.")
         display_informations(criterias, entries)
         return True
     return False
