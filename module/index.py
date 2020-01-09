@@ -113,6 +113,9 @@ class Application:
         if process_request(criterias, entries):
             message.showinfo("Success", "Congratulations, your loan has been accepted.")
             display_informations(criterias, entries)
+            message.showinfo("Average monthly payment", "The average monthly payment for"
+                             " the loan is equal to : ${}"\
+                             .format(compute_monthly_paiement(entries)))
             return True
         return False
 
@@ -134,7 +137,7 @@ def correct_credit_score(entries):
         if int(entries['Credit Score'].get()) < 0 or int(entries["Credit Score"].get()) > 850:
             message.showinfo("Error", "Your Credit Score is invalid.")
             return False
-    except Exception as error:
+    except ValueError as error:
         message.showinfo("Error", "Please, insert a number for the Credit Score.")
         print("Error : {}".format(error))
         return False
@@ -148,11 +151,11 @@ def compute_criterias(entries):
     try:
         criterias['annual_interest_payment'] = int(int(entries['Requested Loan Amount'].get())\
                                                * float(entries['Interest Rate'].get()) / 100)
-        criterias['interest_payment_to_income']['value'] = round(float(float(criterias['annual_interest_payment']\
-                                                           / float(entries['Income'].get()))),3)
+        criterias['interest_payment_to_income']['value'] = round(float(criterias['annual_interest_payment']\
+                                                           / float(entries['Income'].get())), 3)
         criterias['loan_to_home']['value'] = round(float(int(entries['Requested Loan Amount'].get()))\
                                                 / int(entries['Home Value'].get()), 3)
-    except Exception as error:
+    except ValueError as error:
         print('Error : {}'.format(error))
         return False
     return set_state(criterias)
@@ -229,6 +232,22 @@ def display_informations(criterias, entries):
                                               criterias['loan_to_home']['state'],
                                               criterias['credit_score']['value'],
                                               criterias['credit_score']['state']))
+
+def compute_monthly_paiement(entries):
+    '''
+    Compute the average monthly payment for the loan
+    '''
+    try:
+        monthly_paiements = round(int(entries['Requested Loan Amount'].get())\
+                                  * float(entries['Interest Rate'].get()) \
+                            * ((1 + float(entries['Interest Rate'].get())\
+                                **(int(entries['Loan Duration'].get()) * 12)\
+                            / ((1 + float(entries['Interest Rate'].get()))\
+                                **(int(entries['Loan Duration'].get()) * 12) - 1))), 2)
+    except ValueError:
+        monthly_paiements = None
+        print("Sorry, we were unable to compute your average monthly payment.")
+    return monthly_paiements
 
 if __name__ == '__main__':
     ROOT = tk.Tk()
