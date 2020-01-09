@@ -24,8 +24,8 @@ class Application:
         Create all fields, buttons and radios buttons inside the window
         '''
         self.set_form()
-        self.create_buttons()
         self.create_radio_buttons()
+        self.create_buttons()
 
     def set_form(self):
         '''
