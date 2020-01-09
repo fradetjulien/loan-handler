@@ -148,8 +148,8 @@ def compute_criterias(entries):
     try:
         criterias['annual_interest_payment'] = int(int(entries['Requested Loan Amount'].get())\
                                                * float(entries['Interest Rate'].get()) / 100)
-        criterias['interest_payment_to_income']['value'] = int(criterias['annual_interest_payment']\
-                                                            / int(entries['Income'].get()))
+        criterias['interest_payment_to_income']['value'] = round(float(float(criterias['annual_interest_payment']\
+                                                           / float(entries['Income'].get()))),3)
         criterias['loan_to_home']['value'] = round(float(int(entries['Requested Loan Amount'].get()))\
                                                 / int(entries['Home Value'].get()), 3)
     except Exception as error:
