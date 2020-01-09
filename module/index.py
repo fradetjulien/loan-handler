@@ -16,12 +16,6 @@ class Application(tk.Frame):
     def create_widgets(self):
         self.quit_button = tk.Button(self, text='Quit', command=self.quit)
 
-def quit_program(root):
-    '''
-    Exit the program
-    '''
-    root.quit()
-
 def clear_fields(entries):
     '''
     Clear every fields present in the window
@@ -181,7 +175,7 @@ def create_buttons(root, entries):
                        command=(lambda e=entries: clear_fields(entries)))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
     submit = tk.Button(root, highlightbackground='black', text='Quit',
-                       command=(lambda e=entries: quit_program(root)))
+                       command=(lambda e=entries: root.quit()))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
 
 def create_radio_buttons(root, entries):
