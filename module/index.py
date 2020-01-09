@@ -6,8 +6,8 @@ import tkinter.messagebox as message
 from tkinter import filedialog as fd
 import pandas as pd
 
-FORM_FIELDS = ('First Name', 'Last Name', 'Social Security Number', 'Requested Loan Amount',
-               'Interest Rate', 'Income', 'Credit Score', 'Home Value')
+FORM_FIELDS = ('First Name', 'Last Name', 'Social Security Number', 'Credit Score',
+               'Income', 'Requested Loan Amount', 'Home Value', 'Interest Rate')
 
 class Application:
     '''
@@ -150,8 +150,8 @@ def compute_criterias(entries):
                                                * float(entries['Interest Rate'].get()) / 100)
         criterias['interest_payment_to_income']['value'] = int(criterias['annual_interest_payment']\
                                                             / int(entries['Income'].get()))
-        criterias['loan_to_home']['value'] = int(int(entries['Requested Loan Amount'].get()))\
-                                                / int(entries['Home Value'].get())
+        criterias['loan_to_home']['value'] = round(float(int(entries['Requested Loan Amount'].get()))\
+                                                / int(entries['Home Value'].get()), 3)
     except Exception as error:
         print('Error : {}'.format(error))
         return False
@@ -223,9 +223,9 @@ def display_informations(criterias, entries):
                                               entries['Interest Rate'].get(),
                                               entries['Home Value'].get(),
                                               criterias['annual_interest_payment'],
-                                              criterias['interest_payment_to_income']['value'],
+                                              criterias['interest_payment_to_income']['value'] * 100,
                                               criterias['interest_payment_to_income']['state'],
-                                              criterias['loan_to_home']['value'],
+                                              criterias['loan_to_home']['value'] * 100,
                                               criterias['loan_to_home']['state'],
                                               criterias['credit_score']['value'],
                                               criterias['credit_score']['state']))
