@@ -114,14 +114,10 @@ def compute_criterias(entries):
         return False
     return set_state(criterias)
 
-def handle_fields(entries):
+def correct_credit_score(entries):
     '''
-    Check that all fields have been filled in
+    Check if the Credit Score is a number between 0 and 850
     '''
-    for field in FORM_FIELDS:
-        if not entries[field].get():
-            message.showinfo("Error", "Please, all fields are required.")
-            return False
     try:
         if int(entries['Credit Score'].get()) < 0 or int(entries["Credit Score"].get()) > 850:
             message.showinfo("Error", "Your Credit Score is invalid.")
@@ -132,11 +128,21 @@ def handle_fields(entries):
         return False
     return True
 
+def handle_fields(entries):
+    '''
+    Check that all fields have been filled in
+    '''
+    for field in FORM_FIELDS:
+        if not entries[field].get():
+            message.showinfo("Error", "Please, all fields are required.")
+            return False
+    return True
+
 def submit_loan(entries):
     '''
     Manage each step to determine if the loan is accepted
     '''
-    if not handle_fields(entries):
+    if not handle_fields(entries) or not correct_credit_score(entries):
         return False
     criterias = compute_criterias(entries)
     if not criterias:
