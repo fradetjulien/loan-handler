@@ -16,11 +16,12 @@ class Application(tk.Frame):
     def create_widgets(self):
         self.quit_button = tk.Button(self, text='Quit', command=self.quit)
 
-def clear_fields():
+def clear_fields(entries):
     '''
     Clear every fields present in the window
     '''
-    return
+    for field in FORM_FIELDS:
+        entries[field].delete(0, 'end')
 
 def import_file():
     '''
@@ -171,7 +172,7 @@ def create_buttons(root, entries):
                        command=(lambda e=entries: import_file()))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
     submit = tk.Button(root, highlightbackground='black', text='Clear fields',
-                       command=(lambda e=entries: clear_fields()))
+                       command=(lambda e=entries: clear_fields(entries)))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
 
 def create_radio_buttons(root, entries):
