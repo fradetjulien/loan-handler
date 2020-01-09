@@ -4,6 +4,7 @@ Loan Handler
 import tkinter as tk
 import tkinter.messagebox as message
 from tkinter import filedialog as fd
+import pandas as pd
 
 FORM_FIELDS = ('First Name', 'Last Name', 'Social Security Number', 'Requested Loan Amount',
                'Interest Rate', 'Income', 'Credit Score', 'Home Value')
@@ -23,13 +24,18 @@ def clear_fields(entries):
     for field in FORM_FIELDS:
         entries[field].delete(0, 'end')
 
-def import_file():
+def import_file(entries):
     '''
-    Import a CSV file
+    Import a CSV file and filled in entries from values
     '''
-    filename = fd.askopenfilename(initialdir="/", title="Select a file",
-                                  filetypes=(("CSV Files", "*.csv"),))
-    return filename
+    file_path = fd.askopenfilename(initialdir="/", title="Select a file",
+                                   filetypes=(("CSV Files", "*.csv"),))
+    df = pd.read_csv(file_path)
+    i = 0
+    for field in FORM_FIELDS:
+        entries[field].delete(0, 'end')
+        entries[field].insert(0, df['Value'][i])
+        i = i + 1
 
 def display_informations(criterias, entries):
     '''
@@ -169,7 +175,7 @@ def create_buttons(root, entries):
                        command=(lambda e=entries: submit_loan(e)))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
     submit = tk.Button(root, highlightbackground='black', text='Import a CSV file',
-                       command=(lambda e=entries: import_file()))
+                       command=(lambda e=entries: import_file(e)))
     submit.pack(side=tk.LEFT, padx=5, pady=5)
     submit = tk.Button(root, highlightbackground='black', text='Clear fields',
                        command=(lambda e=entries: clear_fields(entries)))
