@@ -21,11 +21,14 @@ If you want to test the script manually, you can achieve this by doing :
 ```bash
 cd module
 pipenv install
+pipenv run python index.py
 ```
 
 ## Example
 
 <p align="center">
+    <img src="assets/gui-usage.png" width="500">
+    <img src="assets/results.png" width="500">
 </p>
 
 ## Executable
