@@ -1,5 +1,5 @@
 # loan-handler
-Set up a program that requires an underwriter to input a number of fields and then processes that information.
+Python script that requires an underwriter to input a number of loan characteristics and then processes these values to determine whether the mortgage loan is accepted or denied.
 
 ## Installation
 
